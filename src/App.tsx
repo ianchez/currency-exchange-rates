@@ -40,6 +40,7 @@ function App() {
     <FormControl fullWidth>
       <InputLabel id="select-main-currency-label">Selected Currency</InputLabel>
       <Select
+        style={{ fontSize: "1.4rem", fontWeight: 500, marginBottom: "36px" }}
         labelId="select-main-currency-label"
         id="select"
         value={mainCurrency}
@@ -58,15 +59,23 @@ function App() {
     if (!mainCurrency || !allCurrencies || !currencyRateByDate?.[selectedCurrency]) return null;
 
     const rate = currencyRateByDate[selectedCurrency]?.[currencyCode];
+    const selectedSideCurrencies = Object.values(sideCurrencies);
+    const filteredCurrencies = Object.fromEntries(
+      Object.entries(allCurrencies).filter(([code]) => 
+        code !== selectedCurrency &&
+        (!selectedSideCurrencies.includes(code) || code === currencyCode)
+      )
+    );
     return (
       <FormControl
         fullWidth
         key={currencyCode}
-        style={{ marginTop: '1rem', flexDirection: 'row', justifyContent: 'space-between' }}
+        style={{ marginBottom: '16px', flexDirection: 'row', justifyContent: 'space-between' }}
+        variant='standard'
       >
         <InputLabel id={`select-compare-currency-label-${currencyCode}`}>Compare</InputLabel>
         <Select
-          style={{ width: "30%" }}
+          style={{ width: "30%", fontSize: "1.1rem", fontWeight: 500 }}
           labelId={`select-compare-currency-label-${currencyCode}`}
           id={`select-compare-currency-${currencyCode}`}
           value={currencyCode}
@@ -74,11 +83,11 @@ function App() {
           onChange={({ target }) => handleSideCurrencyChange(rowNumber, target.value)}
         >
           {allCurrencies
-            ? mapCurrencyToMenuItem(allCurrencies)
+            ? mapCurrencyToMenuItem(filteredCurrencies)
             : <MenuItem value="" disabled>Loading...</MenuItem>
           }
         </Select>
-        <p>{rate?.toFixed(4) || 0}</p>
+        <p style={{ fontSize: "1.2rem", fontWeight: 400 }}>{rate?.toFixed(4) || 0}</p>
       </FormControl>
     );
   };
