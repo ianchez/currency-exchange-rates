@@ -1,8 +1,20 @@
 #root {
-  max-width: 1280px;
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+}
+
+#main-heading {
+  margin-top: 20%;
+  width: 100%;
+}
+
+.main-currency-select {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 36px;
 }
 
 .currency-row {
@@ -43,6 +55,13 @@
   height: 52px;
 }
 
+.side-currency-select {
+  min-width: 160px;
+  width: 40%;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
 .currency-rate {
   font-size: 1.2rem;
   font-weight: 400;
@@ -52,7 +71,7 @@
 }
 
 .add-currency-button {
-  margin-top: 16px;
+  margin-top: 26px;
   background-color: #bc75d273 !important;
   font-size: 1rem !important;
   font-weight: 600 !important;

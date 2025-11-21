@@ -47,9 +47,9 @@ function App() {
     <FormControl fullWidth>
       <InputLabel id="select-main-currency-label">Selected Currency</InputLabel>
       <Select
-        style={{ fontSize: "1.4rem", fontWeight: 500, marginBottom: "36px" }}
         labelId="select-main-currency-label"
         id="select"
+        className="main-currency-select"
         value={mainCurrency}
         label="Selected Currency"
         onChange={handleMainCurrencyChange}
@@ -81,7 +81,7 @@ function App() {
             variant='standard'
           >
             <Skeleton variant="text" width="30%" height={40} />
-            <Skeleton variant="text" width="15%" height={30} />
+            <Skeleton variant="text" width="15%" height={40} />
           </FormControl>
         </div>
       );
@@ -123,9 +123,9 @@ function App() {
             {currencyCode ? "Comparing with:" : "Select a Currency"}
           </InputLabel>
           <Select
-            style={{ width: "40%", fontSize: "1.1rem", fontWeight: 500 }}
             labelId={`select-compare-currency-label-${currencyCode}`}
             id={`select-compare-currency-${currencyCode}`}
+            className="side-currency-select"
             value={currencyCode}
             label="Compare"
             onChange={({ target }) => handleSideCurrencyChange(rowNumber, target.value)}
@@ -148,7 +148,7 @@ function App() {
 
   return (
     <>
-      <h1>Currency Exchange Rates</h1>
+      <h1 id="main-heading">Currency Exchange Rates</h1>
       <div className="card">
         <p>
           <b>Welcome!</b> Please choose your <b>main currency</b> from the dropdown below.
@@ -165,7 +165,6 @@ function App() {
           startIcon={<AddIcon />}
           onClick={addSideCurrency}
           className="add-currency-button"
-          style={{ marginTop: '16px' }}
         >
           Add Currency
         </Button>
