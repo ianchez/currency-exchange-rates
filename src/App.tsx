@@ -8,6 +8,11 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Skeleton from '@mui/material/Skeleton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import type { SelectChangeEvent } from '@mui/material/Select';
 
 function App() {
@@ -17,7 +22,9 @@ function App() {
     allCurrencies,
     currencyRateByDate,
     setMainCurrency,
-    setSideCurrency
+    setSideCurrency,
+    addSideCurrency,
+    removeSideCurrency
   } = useCurrencies();
 
   const handleMainCurrencyChange = ({ target }: SelectChangeEvent) => {
@@ -56,7 +63,29 @@ function App() {
   );
 
   const sideCurrencyRows = (selectedCurrency: string, rowNumber: string, currencyCode: string) => {
-    if (!mainCurrency || !allCurrencies || !currencyRateByDate?.[selectedCurrency]) return null;
+    const position = Number(rowNumber);
+    const sideCurrenciesLength = Object.keys(sideCurrencies).length;
+    // Only allow removing the last currency to avoid gaps if multiple are removed
+    const canRemove = sideCurrenciesLength > 3 && position === sideCurrenciesLength;
+    
+    // Show skeleton when data is loading
+    if (!mainCurrency || !allCurrencies || !currencyRateByDate?.[selectedCurrency]) {
+      return (
+        <div 
+          key={position}
+          className="currency-row"
+        >
+          <FormControl
+            fullWidth
+            className="side-currency-form-control"
+            variant='standard'
+          >
+            <Skeleton variant="text" width="30%" height={40} />
+            <Skeleton variant="text" width="15%" height={30} />
+          </FormControl>
+        </div>
+      );
+    }
 
     const rate = currencyRateByDate[selectedCurrency]?.[currencyCode];
     const selectedSideCurrencies = Object.values(sideCurrencies);
@@ -66,34 +95,56 @@ function App() {
         (!selectedSideCurrencies.includes(code) || code === currencyCode)
       )
     );
+
     return (
-      <FormControl
-        fullWidth
-        key={currencyCode}
-        style={{ marginBottom: '16px', flexDirection: 'row', justifyContent: 'space-between' }}
-        variant='standard'
+      <div 
+        key={position}
+        className="currency-row"
       >
-        <InputLabel id={`select-compare-currency-label-${currencyCode}`}>Compare</InputLabel>
-        <Select
-          style={{ width: "30%", fontSize: "1.1rem", fontWeight: 500 }}
-          labelId={`select-compare-currency-label-${currencyCode}`}
-          id={`select-compare-currency-${currencyCode}`}
-          value={currencyCode}
-          label="Compare"
-          onChange={({ target }) => handleSideCurrencyChange(rowNumber, target.value)}
+        {canRemove && (
+          <IconButton 
+            aria-label="delete" 
+            size="medium" 
+            onClick={() => removeSideCurrency(position)}
+            color="error"
+            className="delete-icon"
+          >
+            <DeleteIcon fontSize="medium" />
+          </IconButton>
+        )}
+        <FormControl
+          fullWidth
+          className="side-currency-form-control"
+          variant='standard'
         >
-          {allCurrencies
-            ? mapCurrencyToMenuItem(filteredCurrencies)
-            : <MenuItem value="" disabled>Loading...</MenuItem>
-          }
-        </Select>
-        <p style={{ fontSize: "1.2rem", fontWeight: 400 }}>{rate?.toFixed(4) || 0}</p>
-      </FormControl>
+          <InputLabel
+            id={`select-compare-currency-label-${currencyCode}`}
+          >
+            {currencyCode ? "Comparing with:" : "Select a Currency"}
+          </InputLabel>
+          <Select
+            style={{ width: "40%", fontSize: "1.1rem", fontWeight: 500 }}
+            labelId={`select-compare-currency-label-${currencyCode}`}
+            id={`select-compare-currency-${currencyCode}`}
+            value={currencyCode}
+            label="Compare"
+            onChange={({ target }) => handleSideCurrencyChange(rowNumber, target.value)}
+          >
+            {allCurrencies
+              ? mapCurrencyToMenuItem(filteredCurrencies)
+              : <MenuItem value="" disabled>Loading...</MenuItem>
+            }
+          </Select>
+          <p className="currency-rate">{currencyCode ? rate?.toFixed(4) || 0 : null}</p>
+        </FormControl>
+      </div>
     );
   };
 
   const sideCurrenciesRates = Object.entries(sideCurrencies)
     .map(([rowNumber , code]) => sideCurrencyRows(mainCurrency,rowNumber, code));
+
+  const canAddMore = Object.keys(sideCurrencies).length < 7;
 
   return (
     <>
@@ -106,6 +157,19 @@ function App() {
 
       {mainCurrencySelect}
       {sideCurrenciesRates}
+      
+      {canAddMore && (
+        <Button
+          fullWidth
+          variant="contained" 
+          startIcon={<AddIcon />}
+          onClick={addSideCurrency}
+          className="add-currency-button"
+          style={{ marginTop: '16px' }}
+        >
+          Add Currency
+        </Button>
+      )}
 
       <p className="info">
         Learn more

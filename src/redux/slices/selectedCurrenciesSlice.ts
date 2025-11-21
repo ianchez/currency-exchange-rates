@@ -42,10 +42,25 @@ export const selectedCurrenciesSlice = createSlice({
       const { position, code } = action.payload;
       state.side[position] = code;
     },
+    addSideCurrency: (state) => {
+      const positions = Object.keys(state.side).map(Number);
+      const maxPosition = positions.length > 0 ? Math.max(...positions) : 0;
+      if (positions.length < 7) {
+        const nextPosition = maxPosition + 1;
+        state.side[nextPosition] = '';
+      }
+    },
+    removeSideCurrency: (state, action: PayloadAction<number>) => {
+      const position = action.payload;
+      const positions = Object.keys(state.side).map(Number);
+      if (positions.length > 3) {
+        delete state.side[position];
+      }
+    },
   },
 });
 
-export const { setMainCurrency, setSideCurrency } = selectedCurrenciesSlice.actions;
+export const { setMainCurrency, setSideCurrency, addSideCurrency, removeSideCurrency } = selectedCurrenciesSlice.actions;
 // Other code such as selectors can use the imported `RootState` type
 export const selectMainCurrency = (state: RootState) => state.selectedCurrencies.main;
 

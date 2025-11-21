@@ -5,17 +5,57 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.currency-row {
+  position: relative;
+  margin-bottom: 16px;
+  padding: 2px 0px 2px 0px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #a564ffaa);
+
+.currency-row:hover {
+  background-color: #33323267;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+.currency-row .delete-icon {
+  position: absolute;
+  left: -38px;
+  padding-top: 12px !important;
+  height: 54px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.currency-row:hover .delete-icon {
+  opacity: 1;
+  border-radius: 5%;
+  background-color: rgba(255, 0, 0, 0.437);
+}
+
+.row-left-column {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.side-currency-form-control {
+  flex-direction: row !important;
+  justify-content: space-between;
+  align-items: center;
+  height: 52px;
+}
+
+.currency-rate {
+  font-size: 1.2rem;
+  font-weight: 400;
+  position: relative;
+  margin: 0;
+  top: 10px;
+}
+
+.add-currency-button {
+  margin-top: 16px;
+  background-color: #bc75d273 !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
 }
 
 @keyframes logo-spin {
@@ -38,5 +78,5 @@
 }
 
 .info {
-  color: #ab61ce;
+  color: #bc75d2;
 }

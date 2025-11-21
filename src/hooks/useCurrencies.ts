@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { setMainCurrency, setSideCurrency, DEFAULT_CURRENCY, DEFAULT_SIDE_CURRENCIES } from '../redux/slices/selectedCurrenciesSlice';
+import { setMainCurrency, setSideCurrency, addSideCurrency, removeSideCurrency, DEFAULT_CURRENCY, DEFAULT_SIDE_CURRENCIES } from '../redux/slices/selectedCurrenciesSlice';
 import { useGetCurrenciesQuery, useGetCurrencyRateByDateQuery } from '../redux/services/currencies';
 
 export const useCurrencies = () => {
@@ -45,12 +45,22 @@ export const useCurrencies = () => {
     dispatch(setSideCurrency({ position: parseInt(position), code }));
   };
 
+  const addSideCurrencyHandler = () => {
+    dispatch(addSideCurrency());
+  };
+
+  const removeSideCurrencyHandler = (position: number) => {
+    dispatch(removeSideCurrency(position));
+  };
+
   return {
     mainCurrency: main,
     sideCurrencies: side,
     allCurrencies,
     currencyRateByDate,
     setMainCurrency: setMainCurrencyHandler,
-    setSideCurrency: setSideCurrencyHandler
+    setSideCurrency: setSideCurrencyHandler,
+    addSideCurrency: addSideCurrencyHandler,
+    removeSideCurrency: removeSideCurrencyHandler
   };
 };
