@@ -16,12 +16,17 @@ function App() {
     sideCurrencies,
     allCurrencies,
     currencyRateByDate,
-    setMainCurrency
+    setMainCurrency,
+    setSideCurrency
   } = useCurrencies()
 
   const handleMainCurrencyChange = ({ target }: SelectChangeEvent) => {
     const { value } = target
     setMainCurrency(value)
+  }
+
+  const handleSideCurrencyChange = (currencyRow: string, currencyCode: string) => {
+    setSideCurrency(currencyRow, currencyCode)
   }
 
   const mapCurrencyToMenuItem = (items: Record<string, string>) =>
@@ -33,9 +38,9 @@ function App() {
 
   const mainCurrencySelect = (
     <FormControl fullWidth>
-      <InputLabel id="select-label">Selected Currency</InputLabel>
+      <InputLabel id="select-main-currency-label">Selected Currency</InputLabel>
       <Select
-        labelId="select-label"
+        labelId="select-main-currency-label"
         id="select"
         value={mainCurrency}
         label="Selected Currency"
@@ -49,6 +54,38 @@ function App() {
     </FormControl>
   );
 
+  const sideCurrencyRows = (selectedCurrency: string, rowNumber: string, currencyCode: string) => {
+    if (!mainCurrency ||!allCurrencies || !currencyRateByDate?.[selectedCurrency]) return null;
+
+    const rate = currencyRateByDate[selectedCurrency]?.[currencyCode];
+    return (
+      <FormControl
+        fullWidth
+        key={currencyCode}
+        style={{ marginTop: '1rem', flexDirection: 'row', justifyContent: 'space-between' }}
+      >
+        <InputLabel id={`select-compare-currency-label-${currencyCode}`}>Compare</InputLabel>
+        <Select
+          style={{ width: "30%" }}
+          labelId={`select-compare-currency-label-${currencyCode}`}
+          id={`select-compare-currency-${currencyCode}`}
+          value={currencyCode}
+          label="Compare"
+          onChange={({ target }) => handleSideCurrencyChange(rowNumber, target.value)}
+        >
+          {allCurrencies
+            ? mapCurrencyToMenuItem(allCurrencies)
+            : <MenuItem value="" disabled>Loading...</MenuItem>
+          }
+        </Select>
+        <p>{rate?.toFixed(4) || 0}</p>
+      </FormControl>
+    );
+  }
+
+  const sideCurrenciesRates = Object.entries(sideCurrencies)
+    .map(([rowNumber , code]) => sideCurrencyRows(mainCurrency,rowNumber, code));
+
   return (
     <>
       <h1>Currency Exchange Rates</h1>
@@ -59,6 +96,7 @@ function App() {
       </div>
 
       {mainCurrencySelect}
+      {sideCurrenciesRates}
 
       <p className="info">
         Learn more

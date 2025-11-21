@@ -41,11 +41,16 @@ export const useCurrencies = () => {
     dispatch(setMainCurrency(value))
   }
 
+  const setSideCurrencyHandler = (position: string, code: string) => {
+    dispatch(setSideCurrency({ position: parseInt(position), code }))
+  }
+
   return {
     mainCurrency: main,
     sideCurrencies: side,
     allCurrencies,
     currencyRateByDate,
     setMainCurrency: setMainCurrencyHandler,
+    setSideCurrency: setSideCurrencyHandler
   }
 }
