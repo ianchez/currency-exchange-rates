@@ -1,9 +1,11 @@
 {
-  "root":[
+  "root": [
     "./src/__tests__/dateUtils.test.ts",
+    "./src/__tests__/formatUtils.test.ts",
     "./src/__tests__/MainCurrencySelect.test.tsx",
     "./src/__tests__/SideCurrencyRow.test.tsx",
     "./src/__tests__/useCurrencies.test.tsx",
+    "./src/__tests__/useMultiDateRates.test.tsx",
     "./vitest.setup.ts"
   ],
   "version":"5.9.3"
