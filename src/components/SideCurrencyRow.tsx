@@ -22,6 +22,29 @@ interface SideCurrencyRowProps {
   onChange: (rowNumber: string, currencyCode: string) => void;
 }
 
+const getFontSizeClass = (rate: string): string => {
+  if (rate === 'N/A') return '';
+  if (rate.length > 10) return 'rate-tiny';
+  if (rate.length > 8) return 'rate-small';
+  return '';
+};
+
+const SkeletonComponent = ({ width = 15 }: { width?: number }) => (
+  <Skeleton variant="text" width={`${width}%`} height={30} sx={{ bgcolor: "#c681db07" }} />
+);
+
+const LoadingSkeleton = ({ position, last7Days }: { position: number; last7Days: Date[] }) => (
+  <div key={position} className="currency-row">
+    <div className="side-currency-form-control">
+      <SkeletonComponent width={100} />
+      <SkeletonComponent width={100} />
+      {last7Days.map((_, index) => (
+        <SkeletonComponent key={index} width={80} />
+      ))}
+    </div>
+  </div>
+);
+
 export const SideCurrencyRow = ({
   position,
   currencyCode,
@@ -37,6 +60,8 @@ export const SideCurrencyRow = ({
   onRemove,
   onChange
 }: SideCurrencyRowProps) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   const selectedSideCurrencies = Object.values(sideCurrencies);
   
   const filteredCurrencies = useMemo(() => {
@@ -49,63 +74,62 @@ export const SideCurrencyRow = ({
     );
   }, [allCurrencies, selectedCurrency, selectedSideCurrencies, currencyCode]);
 
-  // Prepare sparkline data from the 7 days
   const sparklineData = useMemo(() => {
     return last7Days.map(date => {
       const dateKey = date.toISOString().split('T')[0];
       const rate = currencyRatesByDate[dateKey]?.[selectedCurrency]?.[currencyCode] || 0;
-      return {
-        date: dateKey,
-        rate
-      };
+      return { date: dateKey, rate };
     });
   }, [last7Days, currencyRatesByDate, selectedCurrency, currencyCode]);
 
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const isAnyDateLoading = useMemo(
+    () => Object.values(loadingByDate).some(loading => loading),
+    [loadingByDate]
+  );
 
+  const validSparklineData = useMemo(
+    () => sparklineData.filter(d => d.rate > 0),
+    [sparklineData]
+  );
+
+  // Event handlers
   const handleChange = useCallback(({ target }: SelectChangeEvent) => {
     onChange(position.toString(), target.value);
   }, [onChange, position]);
 
-  // Show skeleton when data is loading (only when currencies list is not available)
+  const handleMouseEnter = useCallback((index: number) => {
+    setHoveredIndex(index);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setHoveredIndex(null);
+  }, []);
+
+  // Early return for loading state
   if (!mainCurrency || !allCurrencies) {
-    return (
-      <div 
-        key={position}
-        className="currency-row"
-      >
-        <FormControl
-          fullWidth
-          className="side-currency-form-control"
-          variant='standard'
-        >
-          <SkeletonComponent width={100} />
-          {last7Days.map((_, index) => (
-            <SkeletonComponent key={index} width={80} />
-          ))}
-        </FormControl>
-      </div>
-    );
+    return <LoadingSkeleton position={position} last7Days={last7Days} />;
   }
 
-  const deleteIconButton = canRemove ? (
-    <IconButton 
-      aria-label="delete" 
-      size="medium" 
-      onClick={() => onRemove(position)}
-      color="error"
-      className="delete-icon"
-      disabled={isLoadingRates}
-    >
-      <DeleteIcon fontSize="medium" />
-    </IconButton>
-  ) : null;
+  // Render components
+  const renderDeleteButton = () => {
+    if (!canRemove) return null;
+    
+    return (
+      <IconButton 
+        aria-label="delete" 
+        size="medium" 
+        onClick={() => onRemove(position)}
+        color="error"
+        className="delete-icon"
+        disabled={isLoadingRates}
+      >
+        <DeleteIcon fontSize="medium" />
+      </IconButton>
+    );
+  };
 
-  const sideCurrencySelect = (
-    <FormControl
-      fullWidth
-      variant='standard'
-    >
+  const renderCurrencySelect = () => (
+    <FormControl fullWidth variant='standard'>
       <InputLabel
         id={`select-compare-currency-label-${currencyCode}`}
         color="success"
@@ -130,39 +154,36 @@ export const SideCurrencyRow = ({
     </FormControl>
   );
 
-  const trendChart = (
-    <div className="sparkline-cell">
-      {currencyCode && sparklineData.some(d => d.rate > 0) ? (
-        <RateSparkline 
-          data={sparklineData} 
-          color="#bc75d2" 
-          hoveredIndex={hoveredIndex}
-          onHover={setHoveredIndex}
-        />
-      ) : null}
-    </div>
-  );
+  const renderSparkline = () => {
+    const shouldShowSparkline = currencyCode && !isAnyDateLoading && validSparklineData.length > 0;
 
-  const dailyRate = (date: Date, index: number) => {
+    return (
+      <div className="sparkline-cell">
+        {shouldShowSparkline && (
+          <RateSparkline 
+            data={validSparklineData} 
+            color="#bc75d2" 
+            hoveredIndex={hoveredIndex}
+            onHover={setHoveredIndex}
+          />
+        )}
+      </div>
+    );
+  };
+
+  const renderDailyRate = (date: Date, index: number) => {
     const dateKey = date.toISOString().split('T')[0];
     const rateForDate = currencyRatesByDate[dateKey]?.[selectedCurrency]?.[currencyCode];
     const formattedRate = rateForDate ? formatRate(rateForDate) : 'N/A';
     const isLoadingThisDate = loadingByDate[dateKey] ?? false;
-    
-    // Determine font size class based on number of characters
-    const getFontSizeClass = (rate: string) => {
-      if (rate === 'N/A') return '';
-      if (rate.length > 10) return 'rate-tiny';
-      if (rate.length > 8) return 'rate-small';
-      return '';
-    };
+    const isHovered = hoveredIndex === index;
     
     return (
       <div 
-        key={date.toISOString()} 
-        className={`rate-cell ${hoveredIndex === index ? 'hovered' : ''}`}
-        onMouseEnter={() => setHoveredIndex(index)}
-        onMouseLeave={() => setHoveredIndex(null)}
+        key={dateKey} 
+        className={`rate-cell ${isHovered ? 'hovered' : ''}`}
+        onMouseEnter={() => handleMouseEnter(index)}
+        onMouseLeave={handleMouseLeave}
       >
         {isLoadingThisDate || !currencyRatesByDate[dateKey]?.[selectedCurrency] ? (
           <SkeletonComponent width={80} />
@@ -177,15 +198,12 @@ export const SideCurrencyRow = ({
 
   return (
     <div key={position} className="currency-row">
-      {deleteIconButton}
+      {renderDeleteButton()}
       <div className="side-currency-form-control">
-        {sideCurrencySelect}
-        {trendChart}
-        {last7Days.map(dailyRate)}
+        {renderCurrencySelect()}
+        {renderSparkline()}
+        {last7Days.map(renderDailyRate)}
       </div>
     </div>
   );
 };
-
-const SkeletonComponent = ({width = 15}) =>
-  <Skeleton variant="text" width={`${width}%`} height={30} sx={{ bgcolor: "#c681db07" }} />;
