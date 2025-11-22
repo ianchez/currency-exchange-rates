@@ -23,10 +23,11 @@ export const RateSparkline = ({ data, color = '#bc75d2', hoveredIndex = null, on
   
   return (
     <ResponsiveContainer width="100%" height={40}>
-      <LineChart 
-        data={validData} 
+      <LineChart
+        data={validData}
+        margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
         onMouseMove={(e) => {
-          if (e && typeof e.activeTooltipIndex === 'number' && onHover) {
+          if (e?.activeTooltipIndex !== undefined && e.activeTooltipIndex !== null && onHover) {
             const originalIndex = data.findIndex(d => d.date === validData[e.activeTooltipIndex as number]?.date);
             onHover(originalIndex);
           }
@@ -46,17 +47,19 @@ export const RateSparkline = ({ data, color = '#bc75d2', hoveredIndex = null, on
           strokeWidth={2}
           dot={(props) => {
             const { cx, cy, index } = props;
-            if (index !== hoveredIndex) return null;
-            return (
-              <circle
-                cx={cx}
-                cy={cy}
-                r={4}
-                fill={color}
-                stroke="#53f15bff"
-                strokeWidth={1}
-              />
-            );
+            if (index === hoveredIndex) {
+              return (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={4}
+                  fill={color}
+                  stroke="#fff"
+                  strokeWidth={2}
+                />
+              );
+            }
+            return null;
           }}
           isAnimationActive={false}
         />

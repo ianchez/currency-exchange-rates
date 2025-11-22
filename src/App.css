@@ -80,7 +80,7 @@
 }
 
 .date-header-cell.trend-header {
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 @media (max-width: 500px) {
@@ -223,7 +223,8 @@
 }
 
 .sparkline-cell {
-  padding: 0 0 0 16px;
+  padding: 0px;
+  margin-left: 26px;
 }
 
 @media (max-width: 500px) {
