@@ -18,9 +18,9 @@ export const store = configureStore({
   },
   devTools: true,
   middleware: (getDefaultMiddleware) =>
-    import.meta.env.MODE !== 'production'
-      ? getDefaultMiddleware().concat(logger).concat(currenciesApi.middleware)
-      : getDefaultMiddleware().concat(currenciesApi.middleware),
+    getDefaultMiddleware()
+      .concat(logger)
+      .concat(currenciesApi.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
