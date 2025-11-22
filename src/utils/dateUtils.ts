@@ -20,6 +20,9 @@ export const getMinDate = (): Date => {
  * Format a Date object to YYYY-MM-DD string for HTML date inputs
  */
 export const formatDateForInput = (date: Date): string => {
+  // Check if date is valid
+  if (isNaN(date.getTime())) return '';
+  
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');

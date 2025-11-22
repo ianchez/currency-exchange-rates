@@ -116,6 +116,20 @@ describe('dateUtils', () => {
       
       expect(formatDateForInput(morning)).toBe(formatDateForInput(evening));
     });
+
+    it('returns empty string for invalid date', () => {
+      const invalidDate = new Date('invalid');
+      const result = formatDateForInput(invalidDate);
+      
+      expect(result).toBe('');
+    });
+
+    it('handles NaN date', () => {
+      const nanDate = new Date(NaN);
+      const result = formatDateForInput(nanDate);
+      
+      expect(result).toBe('');
+    });
   });
 
   describe('clampDate', () => {

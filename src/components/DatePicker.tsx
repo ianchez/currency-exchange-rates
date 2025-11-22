@@ -9,6 +9,10 @@ interface DatePickerProps {
 export const DatePicker = ({ selectedDate, onChange }: DatePickerProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = new Date(event.target.value);
+    
+    // Check if the date is valid
+    if (isNaN(newDate.getTime())) return;
+    
     const minDateObj = getMinDate();
     const yesterday = getYesterday();
     const clampedDate = clampDate(newDate, minDateObj, yesterday);
