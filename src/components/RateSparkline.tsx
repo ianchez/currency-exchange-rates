@@ -20,36 +20,18 @@ export const RateSparkline = ({ data, color = '#bc75d2', hoveredIndex = null, on
   const minRate = Math.min(...rates);
   const maxRate = Math.max(...rates);
   const padding = (maxRate - minRate) * 0.1 || 0.01; // 10% padding or small default
-
-  // Custom cursor to trigger hover on data points
-  const CustomCursor = (props: any) => {
-    const { points, activeTooltipIndex } = props;
-    if (onHover && activeTooltipIndex !== undefined) {
-      // Find the original index from the filtered data
-      const originalIndex = data.findIndex(d => d.date === validData[activeTooltipIndex]?.date);
-      if (originalIndex !== hoveredIndex) {
-        onHover(originalIndex);
-      }
-    }
-    return null;
-  };
   
   return (
     <ResponsiveContainer width="100%" height={40}>
       <LineChart 
         data={validData} 
-        margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
-        onMouseMove={(e: any) => {
-          if (e?.activeTooltipIndex !== undefined && onHover) {
-            const originalIndex = data.findIndex(d => d.date === validData[e.activeTooltipIndex]?.date);
+        onMouseMove={(e) => {
+          if (e && typeof e.activeTooltipIndex === 'number' && onHover) {
+            const originalIndex = data.findIndex(d => d.date === validData[e.activeTooltipIndex as number]?.date);
             onHover(originalIndex);
           }
         }}
-        onMouseLeave={() => {
-          if (onHover) {
-            onHover(null);
-          }
-        }}
+        onMouseLeave={() => onHover?.(null)}
       >
         <Tooltip content={() => null} cursor={false} />
         <YAxis 
@@ -64,19 +46,17 @@ export const RateSparkline = ({ data, color = '#bc75d2', hoveredIndex = null, on
           strokeWidth={2}
           dot={(props) => {
             const { cx, cy, index } = props;
-            if (index === hoveredIndex) {
-              return (
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r={4}
-                  fill={color}
-                  stroke="#fff"
-                  strokeWidth={2}
-                />
-              );
-            }
-            return null;
+            if (index !== hoveredIndex) return null;
+            return (
+              <circle
+                cx={cx}
+                cy={cy}
+                r={4}
+                fill={color}
+                stroke="#53f15bff"
+                strokeWidth={1}
+              />
+            );
           }}
           isAnimationActive={false}
         />
