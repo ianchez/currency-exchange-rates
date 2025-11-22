@@ -174,7 +174,7 @@ describe('SideCurrencyRow', () => {
     
     render(<SideCurrencyRow {...defaultProps} currencyRateByDate={ratesWithoutUsd} />);
     
-    expect(screen.getByText('0')).toBeInTheDocument();
+    expect(screen.getByText('N/A')).toBeInTheDocument();
   });
 
   it('shows correct label when no currency is selected', () => {

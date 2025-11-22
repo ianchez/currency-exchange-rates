@@ -1,3 +1,4 @@
+import { useMemo, useCallback } from 'react';
 import { FormControl, InputLabel, Select, MenuItem, IconButton, Skeleton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { SelectChangeEvent } from '@mui/material/Select';
@@ -37,6 +38,22 @@ export const SideCurrencyRow = ({
       </MenuItem>
     ));
 
+  const selectedSideCurrencies = Object.values(sideCurrencies);
+  
+  const filteredCurrencies = useMemo(() => {
+    if (!allCurrencies) return {};
+    return Object.fromEntries(
+      Object.entries(allCurrencies).filter(([code]) => 
+        code !== selectedCurrency &&
+        (!selectedSideCurrencies.includes(code) || code === currencyCode)
+      )
+    );
+  }, [allCurrencies, selectedCurrency, selectedSideCurrencies, currencyCode]);
+
+  const handleChange = useCallback(({ target }: SelectChangeEvent) => {
+    onChange(position.toString(), target.value);
+  }, [onChange, position]);
+
   // Show skeleton when data is loading (only when currencies list is not available)
   if (!mainCurrency || !allCurrencies) {
     return (
@@ -56,36 +73,25 @@ export const SideCurrencyRow = ({
     );
   }
 
-  const rate = currencyRateByDate?.[selectedCurrency]?.[currencyCode];
-  const selectedSideCurrencies = Object.values(sideCurrencies);
-  const filteredCurrencies = Object.fromEntries(
-    Object.entries(allCurrencies).filter(([code]) => 
-      code !== selectedCurrency &&
-      (!selectedSideCurrencies.includes(code) || code === currencyCode)
-    )
-  );
+  const deleteIconButton = canRemove ? (
+    <IconButton 
+      aria-label="delete" 
+      size="medium" 
+      onClick={() => onRemove(position)}
+      color="error"
+      className="delete-icon"
+      disabled={isLoadingRates}
+    >
+      <DeleteIcon fontSize="medium" />
+    </IconButton>
+  ) : null;
 
-  const handleChange = ({ target }: SelectChangeEvent) => {
-    onChange(position.toString(), target.value);
-  };
+  const rate =
+    currencyRateByDate?.[selectedCurrency]?.[currencyCode]?.toFixed(RATE_DECIMAL_PLACES) ?? 'N/A';
 
   return (
-    <div 
-      key={position}
-      className="currency-row"
-    >
-      {canRemove && (
-        <IconButton 
-          aria-label="delete" 
-          size="medium" 
-          onClick={() => onRemove(position)}
-          color="error"
-          className="delete-icon"
-          disabled={isLoadingRates}
-        >
-          <DeleteIcon fontSize="medium" />
-        </IconButton>
-      )}
+    <div key={position} className="currency-row">
+      {deleteIconButton}
       <FormControl
         fullWidth
         className="side-currency-form-control"
@@ -115,7 +121,7 @@ export const SideCurrencyRow = ({
         {isLoadingRates || !currencyRateByDate?.[selectedCurrency] ? (
           <SkeletonComponent />
         ) : (
-          <p className="currency-rate">{currencyCode ? rate?.toFixed(RATE_DECIMAL_PLACES) ?? 0 : null}</p>
+          <p className="currency-rate">{currencyCode ? rate : null}</p>
         )}
       </FormControl>
     </div>
