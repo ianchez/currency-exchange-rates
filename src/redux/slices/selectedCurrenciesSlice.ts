@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store';
+import { MIN_SIDE_CURRENCIES, MAX_SIDE_CURRENCIES } from '../../constants/currency';
 
 export interface CurrenciesState {
   main: string
@@ -45,7 +46,7 @@ export const selectedCurrenciesSlice = createSlice({
     addSideCurrency: (state) => {
       const positions = Object.keys(state.side).map(Number);
       const maxPosition = positions.length > 0 ? Math.max(...positions) : 0;
-      if (positions.length < 7) {
+      if (positions.length < MAX_SIDE_CURRENCIES) {
         const nextPosition = maxPosition + 1;
         state.side[nextPosition] = '';
       }
@@ -53,7 +54,7 @@ export const selectedCurrenciesSlice = createSlice({
     removeSideCurrency: (state, action: PayloadAction<number>) => {
       const position = action.payload;
       const positions = Object.keys(state.side).map(Number);
-      if (positions.length > 3) {
+      if (positions.length > MIN_SIDE_CURRENCIES) {
         delete state.side[position];
       }
     },

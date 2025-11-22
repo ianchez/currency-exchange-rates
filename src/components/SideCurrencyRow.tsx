@@ -1,6 +1,7 @@
 import { FormControl, InputLabel, Select, MenuItem, IconButton, Skeleton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { SelectChangeEvent } from '@mui/material/Select';
+import { RATE_DECIMAL_PLACES } from '../constants/currency';
 
 interface SideCurrencyRowProps {
   position: number;
@@ -114,7 +115,7 @@ export const SideCurrencyRow = ({
         {isLoadingRates || !currencyRateByDate?.[selectedCurrency] ? (
           <SkeletonComponent />
         ) : (
-          <p className="currency-rate">{currencyCode ? rate?.toFixed(4) ?? 0 : null}</p>
+          <p className="currency-rate">{currencyCode ? rate?.toFixed(RATE_DECIMAL_PLACES) ?? 0 : null}</p>
         )}
       </FormControl>
     </div>

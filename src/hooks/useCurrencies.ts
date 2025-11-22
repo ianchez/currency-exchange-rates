@@ -2,12 +2,8 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { setMainCurrency, setSideCurrency, addSideCurrency, removeSideCurrency, DEFAULT_CURRENCY, DEFAULT_SIDE_CURRENCIES } from '../redux/slices/selectedCurrenciesSlice';
 import { useGetCurrenciesQuery, useGetCurrencyRateByDateQuery } from '../redux/services/currencies';
-
-const getYesterday = (): Date => {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  return yesterday;
-};
+import { getYesterday } from '../utils/dateUtils';
+import { DATE_DEBOUNCE_MS } from '../constants/currency';
 
 export const useCurrencies = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +18,7 @@ export const useCurrencies = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedDate(selectedDate);
-    }, 200);
+    }, DATE_DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
   }, [selectedDate]);

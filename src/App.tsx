@@ -10,6 +10,9 @@ import { DatePicker } from './components/DatePicker';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
+// Constants
+import { MIN_SIDE_CURRENCIES, MAX_SIDE_CURRENCIES } from './constants/currency';
+
 function App() {
   const {
     mainCurrency,
@@ -28,7 +31,7 @@ function App() {
   const sideCurrenciesRates = Object.entries(sideCurrencies).map(([rowNumber, code]) => {
     const position = Number(rowNumber);
     const sideCurrenciesLength = Object.keys(sideCurrencies).length;
-    const canRemove = sideCurrenciesLength > 3 && position === sideCurrenciesLength;
+    const canRemove = sideCurrenciesLength > MIN_SIDE_CURRENCIES && position === sideCurrenciesLength;
 
     return (
       <SideCurrencyRow
@@ -48,7 +51,7 @@ function App() {
     );
   });
 
-  const canAddMore = Object.keys(sideCurrencies).length < 7;
+  const canAddMore = Object.keys(sideCurrencies).length < MAX_SIDE_CURRENCIES;
 
   return (
     <>
