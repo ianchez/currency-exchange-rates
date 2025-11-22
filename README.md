@@ -2,6 +2,16 @@
 
 A modern currency converter application with historical exchange rates and interactive trend visualization.
 
+## Features
+
+- React 19
+- TypeScript
+- Vite for fast development and building
+- Redux Toolkit for state management and data caching
+- ESLint and Prettier for code quality and formatting
+- Recharts for data visualization
+- React Testing Library and Vitest for testing
+
 ## Quick Start
 
 ### Prerequisites
