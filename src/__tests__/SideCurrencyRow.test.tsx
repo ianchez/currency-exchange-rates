@@ -2,31 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SideCurrencyRow } from '../components/SideCurrencyRow';
+import { mockCurrencies, mockCurrencyRates, mockSideCurrencies } from './helpers/testUtils';
 
 describe('SideCurrencyRow', () => {
-  const mockCurrencies = {
-    usd: 'US Dollar',
-    eur: 'Euro',
-    gbp: 'British Pound',
-    jpy: 'Japanese Yen',
-    cad: 'Canadian Dollar'
-  };
-
-  const mockCurrencyRates = {
-    gbp: {
-      usd: 1.2567,
-      eur: 1.1834,
-      jpy: 188.45,
-      cad: 1.7234
-    }
-  };
-
-  const mockSideCurrencies = {
-    1: 'usd',
-    2: 'eur',
-    3: 'jpy'
-  };
-
   const defaultProps = {
     position: 1,
     currencyCode: 'usd',

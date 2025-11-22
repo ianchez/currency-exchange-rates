@@ -3,20 +3,10 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { MainCurrencySelect } from '../components/MainCurrencySelect';
+import { createMockProps } from './helpers/testUtils';
 
 describe('MainCurrencySelect', () => {
-  const mockCurrencies = {
-    usd: 'US Dollar',
-    eur: 'Euro',
-    gbp: 'British Pound'
-  };
-
-  const defaultProps = {
-    mainCurrency: 'usd',
-    allCurrencies: mockCurrencies,
-    isLoadingRates: false,
-    onChange: vi.fn()
-  };
+  const defaultProps = createMockProps();
 
   it('renders the select component with label', () => {
     render(<MainCurrencySelect {...defaultProps} />);
