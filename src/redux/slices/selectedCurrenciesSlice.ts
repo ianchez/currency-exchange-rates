@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from '../store';
 import { MIN_SIDE_CURRENCIES, MAX_SIDE_CURRENCIES } from '../../constants/currency';
 
 export interface CurrenciesState {
@@ -51,7 +50,5 @@ export const selectedCurrenciesSlice = createSlice({
 });
 
 export const { setMainCurrency, setSideCurrency, addSideCurrency, removeSideCurrency } = selectedCurrenciesSlice.actions;
-// Other code such as selectors can use the imported `RootState` type
-export const selectMainCurrency = (state: RootState) => state.selectedCurrencies.main;
 
 export default selectedCurrenciesSlice.reducer;
