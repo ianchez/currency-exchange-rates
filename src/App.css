@@ -57,7 +57,7 @@
 
 @media (min-width: 500px) {
   .date-header-row {
-    grid-template-columns: minmax(70px, 2fr) repeat(7, 1fr);
+    grid-template-columns: minmax(70px, 2fr) 100px repeat(7, 1fr);
   }
 }
 
@@ -123,14 +123,14 @@
 
 .side-currency-form-control {
   display: grid !important;
-  grid-template-columns: minmax(70px, 1fr) repeat(7, 1fr);
+  grid-template-columns: minmax(70px, 1fr) 100px repeat(7, 1fr);
   align-items: center;
   height: 52px;
 }
 
 @media (min-width: 500px) {
   .side-currency-form-control {
-    grid-template-columns: minmax(70px, 2fr) repeat(7, 1fr);
+    grid-template-columns: minmax(70px, 2fr) 100px repeat(7, 1fr);
   }
 }
 
@@ -172,6 +172,13 @@
   font-size: 0.95rem;
   font-weight: 200;
   color: var(--color-rate);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  border-radius: 4px;
+}
+
+.rate-cell.hovered {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.05);
 }
 
 @media (max-width: 500px) {
@@ -194,6 +201,10 @@
 .rate-cell:hover {
   font-weight: 600;
   font-size: 1.2rem;
+}
+
+.sparkline-cell {
+  padding: 0 0 0 16px;
 }
 
 .add-currency-button {

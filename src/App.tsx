@@ -39,6 +39,7 @@ function App() {
   const sideCurrenciesHeader = (
     <div className="date-header-row">
       <div className="empty-header-cell"></div> {/* Empty cell for alignment */}
+      <div className="date-header-cell">Trend</div>
       {last7Days.map((date, index) => (
         <div key={index} className="date-header-cell">
           {date.toLocaleDateString('en-US', { 
