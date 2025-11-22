@@ -16,7 +16,7 @@ A modern currency exchange rates converter application with historical exchange 
 
 ### Prerequisites
 
-- Node.js 14 or above
+- Node.js 18 or above (recommended: Node 22+)
 
 ### Installation & Running
 
