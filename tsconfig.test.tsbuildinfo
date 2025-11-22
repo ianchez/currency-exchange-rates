@@ -1,0 +1,9 @@
+{
+  "root":[
+    "./src/__tests__/MainCurrencySelect.test.tsx",
+    "./src/__tests__/SideCurrencyRow.test.tsx",
+    "./src/__tests__/useCurrencies.test.tsx",
+    "./vitest.setup.ts"
+  ],
+  "version":"5.9.3"
+}
