@@ -1,6 +1,6 @@
-# Currency Converter
+# Exchange Rates Converter
 
-A modern currency converter application with historical exchange rates and interactive trend visualization.
+A modern currency exchange rates converter application with historical exchange rates and interactive trend visualization.
 
 ## Features
 
