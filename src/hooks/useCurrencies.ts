@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { setMainCurrency, setSideCurrency, addSideCurrency, removeSideCurrency } from '../redux/slices/selectedCurrenciesSlice';
-import { useGetCurrenciesQuery, useGetCurrencyRateByDateQuery } from '../redux/services/currencies';
-import { getYesterday } from '../utils/dateUtils';
+import { useGetCurrenciesQuery } from '../redux/services/currencies';
+import { getYesterday, getLast7Days } from '../utils/dateUtils';
 import { DATE_DEBOUNCE_MS, DEFAULT_CURRENCY, DEFAULT_SIDE_CURRENCIES } from '../constants/currency';
+import { useMultiDateRates } from './useMultiDateRates';
 
 export const useCurrencies = () => {
   const dispatch = useAppDispatch();
@@ -24,12 +25,17 @@ export const useCurrencies = () => {
   }, [selectedDate]);
 
   const { data: allCurrencies, isSuccess } = useGetCurrenciesQuery();
-  const { data: currencyRateByDate, isLoading, isFetching } = useGetCurrencyRateByDateQuery({
-    year: debouncedDate.getFullYear().toString(),
-    month: (debouncedDate.getMonth() + 1).toString(),
-    day: debouncedDate.getDate().toString(),
-    currencyCode: main || DEFAULT_CURRENCY
-  });
+
+  const last7Days = useMemo(() => getLast7Days(debouncedDate), [debouncedDate]);
+  
+  // Fetch data for all 7 days using custom hook
+  const currency = main || DEFAULT_CURRENCY;
+  const {
+    ratesByDate: currencyRatesByDate,
+    loadingByDate,
+    isLoading,
+    isFetching
+  } = useMultiDateRates(last7Days, currency);
 
   useEffect(() => {
     if (isSuccess && allCurrencies && Object.keys(allCurrencies).length > 0) {
@@ -68,7 +74,8 @@ export const useCurrencies = () => {
     mainCurrency: main,
     sideCurrencies: side,
     allCurrencies,
-    currencyRateByDate,
+    currencyRatesByDate,
+    loadingByDate,
     selectedDate,
     setSelectedDate,
     isLoadingRates: isLoading || isFetching,

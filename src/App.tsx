@@ -23,7 +23,8 @@ function App() {
     mainCurrency,
     sideCurrencies,
     allCurrencies,
-    currencyRateByDate,
+    currencyRatesByDate,
+    loadingByDate,
     selectedDate,
     setSelectedDate,
     isLoadingRates,
@@ -63,7 +64,8 @@ function App() {
           selectedCurrency={mainCurrency}
           mainCurrency={mainCurrency}
           allCurrencies={allCurrencies}
-          currencyRateByDate={currencyRateByDate}
+          currencyRatesByDate={currencyRatesByDate}
+          loadingByDate={loadingByDate}
           sideCurrencies={sideCurrencies}
           canRemove={canRemove}
           isLoadingRates={isLoadingRates}
@@ -77,7 +79,8 @@ function App() {
     sideCurrencies,
     mainCurrency,
     allCurrencies,
-    currencyRateByDate,
+    currencyRatesByDate,
+    loadingByDate,
     isLoadingRates,
     last7Days,
     removeSideCurrency,

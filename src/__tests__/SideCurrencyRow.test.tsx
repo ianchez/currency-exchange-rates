@@ -10,13 +10,23 @@ describe('SideCurrencyRow', () => {
   const testDate = new Date('2025-11-22T12:00:00Z');
   const last7Days = getLast7Days(testDate);
   
+  // Create mock rates for all 7 days
+  const mockCurrencyRatesByDate: Record<string, Record<string, Record<string, number>>> = {};
+  const mockLoadingByDate: Record<string, boolean> = {};
+  last7Days.forEach(date => {
+    const dateKey = date.toISOString().split('T')[0];
+    mockCurrencyRatesByDate[dateKey] = mockCurrencyRates;
+    mockLoadingByDate[dateKey] = false;
+  });
+  
   const defaultProps = {
     position: 1,
     currencyCode: 'usd',
     selectedCurrency: 'gbp',
     mainCurrency: 'gbp',
     allCurrencies: mockCurrencies,
-    currencyRateByDate: mockCurrencyRates,
+    currencyRatesByDate: mockCurrencyRatesByDate,
+    loadingByDate: mockLoadingByDate,
     sideCurrencies: mockSideCurrencies,
     canRemove: false,
     isLoadingRates: false,
@@ -56,7 +66,14 @@ describe('SideCurrencyRow', () => {
   });
 
   it('shows skeleton for rate when isLoadingRates is true', () => {
-    render(<SideCurrencyRow {...defaultProps} isLoadingRates={true} />);
+    // Create loading state for all dates
+    const loadingAll: Record<string, boolean> = {};
+    last7Days.forEach(date => {
+      const dateKey = date.toISOString().split('T')[0];
+      loadingAll[dateKey] = true;
+    });
+    
+    render(<SideCurrencyRow {...defaultProps} isLoadingRates={true} loadingByDate={loadingAll} />);
     
     // Rate should be a skeleton, not the actual number
     const rate = mockCurrencyRates.gbp.usd.toFixed(4);
@@ -66,8 +83,8 @@ describe('SideCurrencyRow', () => {
     expect(skeletons.length).toBeGreaterThan(0);
   });
 
-  it('shows skeleton for rate when currencyRateByDate is undefined', () => {
-    render(<SideCurrencyRow {...defaultProps} currencyRateByDate={undefined} />);
+  it('shows skeleton for rate when currencyRatesByDate is undefined', () => {
+    render(<SideCurrencyRow {...defaultProps} currencyRatesByDate={{}} />);
     
     const skeletons = document.querySelectorAll('.MuiSkeleton-root');
     expect(skeletons.length).toBeGreaterThan(0);
@@ -173,14 +190,18 @@ describe('SideCurrencyRow', () => {
   });
 
   it('displays rate as 0 when rate is undefined', () => {
-    const ratesWithoutUsd = {
-      gbp: {
-        eur: 1.1834,
-        jpy: 188.45
-      }
-    };
+    const ratesWithoutUsd: Record<string, Record<string, Record<string, number>>> = {};
+    last7Days.forEach(date => {
+      const dateKey = date.toISOString().split('T')[0];
+      ratesWithoutUsd[dateKey] = {
+        gbp: {
+          eur: 1.1834,
+          jpy: 188.45
+        }
+      };
+    });
     
-    render(<SideCurrencyRow {...defaultProps} currencyRateByDate={ratesWithoutUsd} />);
+    render(<SideCurrencyRow {...defaultProps} currencyRatesByDate={ratesWithoutUsd} />);
     
     const naElements = screen.getAllByText('N/A');
     // Should have 7 instances (one for each day)

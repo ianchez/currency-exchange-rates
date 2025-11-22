@@ -11,7 +11,8 @@ interface SideCurrencyRowProps {
   selectedCurrency: string;
   mainCurrency: string;
   allCurrencies: Record<string, string> | undefined;
-  currencyRateByDate: Record<string, Record<string, number>> | undefined;
+  currencyRatesByDate: Record<string, Record<string, Record<string, number>>>;
+  loadingByDate: Record<string, boolean>;
   sideCurrencies: Record<number, string>;
   canRemove: boolean;
   isLoadingRates: boolean;
@@ -26,7 +27,8 @@ export const SideCurrencyRow = ({
   selectedCurrency,
   mainCurrency,
   allCurrencies,
-  currencyRateByDate,
+  currencyRatesByDate,
+  loadingByDate,
   sideCurrencies,
   canRemove,
   isLoadingRates,
@@ -113,13 +115,15 @@ export const SideCurrencyRow = ({
             : <MenuItem value="" disabled>Loading...</MenuItem>
           }
         </Select>
-        {last7Days.map((_, index) => {
-          const rateForDate = currencyRateByDate?.[selectedCurrency]?.[currencyCode];
+        {last7Days.map((date, index) => {
+          const dateKey = date.toISOString().split('T')[0];
+          const rateForDate = currencyRatesByDate[dateKey]?.[selectedCurrency]?.[currencyCode];
           const formattedRate = rateForDate ? formatRate(rateForDate) : 'N/A';
+          const isLoadingThisDate = loadingByDate[dateKey] ?? false;
           
           return (
             <div key={index} className="rate-cell">
-              {isLoadingRates || !currencyRateByDate?.[selectedCurrency] ? (
+              {isLoadingThisDate || !currencyRatesByDate[dateKey]?.[selectedCurrency] ? (
                 <SkeletonComponent width={80} />
               ) : (
                 <p className="currency-rate">{currencyCode ? formattedRate : null}</p>
