@@ -10,9 +10,13 @@ export const DATE_DEBOUNCE_MS = 200;
 export const RATE_DECIMAL_PLACES = 4;
 
 // Default currency settings
-export const DEFAULT_CURRENCY = 'gbp';
+export const DEFAULT_CURRENCY = 'gbp'; // British Pound
 export const DEFAULT_SIDE_CURRENCIES: Record<number, string> = {
-  1: 'usd',
-  2: 'eur',
-  3: 'jpy'
+  1: 'usd', // US Dollar
+  2: 'eur', // Euro
+  3: 'jpy', // Japanese Yen
+  4: 'chf', // Swiss Franc
+  5: 'cad', // Canadian Dollar
+  6: 'aud', // Australian Dollar
+  7: 'zar', // South African Rand
 };

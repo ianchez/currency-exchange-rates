@@ -8,17 +8,6 @@ export interface CurrenciesState {
   side: Record<number, string>
 }
 
-export const DEFAULT_CURRENCY = 'gbp'; // British Pound
-export const DEFAULT_SIDE_CURRENCIES: Record<number, string> = {
-  1: 'usd', // US Dollar
-  2: 'eur', // Euro
-  3: 'jpy', // Japanese Yen
-  4: 'chf', // Swiss Franc
-  5: 'cad', // Canadian Dollar
-  6: 'aud', // Australian Dollar
-  7: 'zar', // South African Rand
-};
-
 const initialState: CurrenciesState = {
   main: '',
   side: {
