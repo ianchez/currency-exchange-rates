@@ -1,13 +1,31 @@
+:root {
+  /* Colors */
+  --color-primary: #bc75d2;
+  --color-primary-transparent: #bc75d273;
+  --color-primary-border: #bc75d233;
+  --color-primary-hover: #bc75d205;
+  --color-primary-card: #bc75d20f;
+  --color-secondary: #8b6198;
+  --color-rate: #e9c9f3cb;
+  --color-rate-primary: #b670cbad;
+  --color-rate-hover: #59d678;
+  --color-delete-hover: rgba(49, 4, 4, 0.264);
+  --color-text-light: #DDD;
+  --color-text-dark: #222;
+  --color-disabled: #55555573;
+}
+
 #root {
   display: flex;
   flex-direction: column;
-  max-width: 80%;
+  width: 80%;
+  max-width: 1000px;
   margin: 0 auto;
   text-align: center;
 }
 
 #main-heading {
-  margin-top: 20%;
+  margin-top: 100px;
   width: 100%;
 }
 
@@ -27,15 +45,20 @@
 
 .date-header-row {
   display: grid;
-  grid-template-columns: 1fr repeat(7, 1fr);
+  grid-template-columns: minmax(70px, 1fr) repeat(7, 1fr);
   margin-bottom: 8px;
   padding: 0 0 8px 0;
-  border-bottom: 1px solid #bc75d233;
+  border-bottom: 1px solid var(--color-primary-border);
 }
 
 .empty-header-cell {
-  min-width: 160px;
-  width: 40%;
+  grid-column: span 1;
+}
+
+@media (min-width: 500px) {
+  .date-header-row {
+    grid-template-columns: minmax(70px, 2fr) repeat(7, 1fr);
+  }
 }
 
 .date-header-cell {
@@ -44,7 +67,7 @@
   align-items: flex-end;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #8b6198;
+  color: var(--color-secondary);
   padding: 0 4px;
 }
 
@@ -52,7 +75,7 @@
   text-align: center;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #bc75d2;
+  color: var(--color-primary);
   padding: 0 4px;
 }
 
@@ -61,7 +84,7 @@
 }
 
 .rates-header h3 {
-  color: #bc75d2;
+  color: var(--color-primary);
   font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
@@ -74,7 +97,7 @@
 }
 
 .currency-row:hover {
-  background-color: #bc75d205;
+  background-color: var(--color-primary-hover);
 }
 
 .currency-row .delete-icon {
@@ -89,7 +112,7 @@
 .currency-row:hover .delete-icon {
   opacity: 1;
   border-radius: 5%;
-  background-color: rgba(49, 4, 4, 0.264);
+  background-color: var(--color-delete-hover);
 }
 
 .row-left-column {
@@ -100,14 +123,19 @@
 
 .side-currency-form-control {
   display: grid !important;
-  grid-template-columns: 1fr repeat(7, 1fr);
+  grid-template-columns: minmax(70px, 1fr) repeat(7, 1fr);
   align-items: center;
   height: 52px;
 }
 
+@media (min-width: 500px) {
+  .side-currency-form-control {
+    grid-template-columns: minmax(70px, 2fr) repeat(7, 1fr);
+  }
+}
+
 .side-currency-select {
-  min-width: 160px;
-  width: 40%;
+  width: 100%;
   font-size: 1.1rem;
   font-weight: 500;
 }
@@ -119,7 +147,7 @@
 .rate-date-label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #bc75d2;
+  color: var(--color-primary);
   margin: 0;
   margin-bottom: 4px;
   text-align: right;
@@ -131,7 +159,7 @@
   margin-bottom: 8px;
 }
 .currency-row:hover .currency-rate {
-  color: #469e5c;
+  color: var(--color-rate-hover);
   font-weight: 600;
 }
 
@@ -141,14 +169,27 @@
   align-items: flex-end;
   height: 100%;
   padding-right: 4px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 200;
-  color: #e9c9f3cb;
+  color: var(--color-rate);
 }
+
+@media (max-width: 500px) {
+  .rate-cell {
+    font-size: 0.75rem;
+  }
+  .rate-cell:last-child {
+    font-size: 0.9rem;
+  }
+  .rate-cell:hover {
+    font-size: 1rem;
+  }
+}
+
 .rate-cell:last-child {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #b670cbad;
+  color: var(--color-rate-primary);
 }
 .rate-cell:hover {
   font-weight: 600;
@@ -156,16 +197,17 @@
 }
 
 .add-currency-button {
-  margin-top: 26px;
-  color: #DDD !important;
-  background-color: #bc75d273 !important;
+  margin-top: 10px !important;
+  margin-bottom: 24px !important;
+  color: var(--color-text-light) !important;
+  background-color: var(--color-primary-transparent) !important;
   font-size: 1rem !important;
   font-weight: 600 !important;
 }
 
 .add-currency-button:disabled {
-  background-color: #55555573 !important;
-  color: #222 !important;
+  background-color: var(--color-disabled) !important;
+  color: var(--color-text-dark) !important;
 }
 
 @keyframes logo-spin {
@@ -185,10 +227,10 @@
 
 .card {
   padding: 1.8em;
-  background-color: #bc75d20f;
+  background-color: var(--color-primary-card);
   margin-bottom: 6px;
 }
 
 .info {
-  color: #bc75d2 !important;
+  color: var(--color-primary) !important;
 }

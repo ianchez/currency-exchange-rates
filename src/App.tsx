@@ -8,6 +8,7 @@ import { useCurrencies } from './hooks/useCurrencies';
 import { SideCurrencyRow } from './components/SideCurrencyRow';
 import { MainCurrencySelect } from './components/MainCurrencySelect';
 import { DatePicker } from './components/DatePicker';
+import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -121,11 +122,10 @@ function App() {
         </Button>
       )}
 
-      <p className="info">
-        Historical data available for the last 90 days. <br />
-        Select an end date to view exchange rates for that day plus the previous 6 days 
-        <b>(7 days total).</b>
-      </p>
+      <Typography className="info">
+        Historical data available for the last <b>90 days.</b> <br />
+        Select an end date to view exchange rates for that day plus the previous 6 days <b>(7 days total).</b>
+      </Typography>
     </>
   );
 }
